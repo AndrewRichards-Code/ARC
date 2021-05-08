@@ -23,7 +23,7 @@
 
 //Asset
 #if defined(_DEBUG) || defined(ARC_ENABLE_ASSERT)
-	#define ARC_ASSERT(x, ...) { if(!(x)) { /*HZ_ERROR("Assertion Failed: {0}", __VA_ARGS__);*/ ARC_DEBUG_BREAK(); } }
+	#define ARC_ASSERT(x, ...) { if(!(x)) { ARC_DEBUG_BREAK(); } }
 #else
 	#define ARC_ASSERT(x, ...)
 #endif
