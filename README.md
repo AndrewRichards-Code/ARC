@@ -21,6 +21,3 @@ A header-only library containing basic helper functionality.
 ### Linux x64:
 - No project available to build.
 - ISO C++ 17 is required.
-
-
-
