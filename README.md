@@ -1,5 +1,5 @@
 # ARC
-A header only library containing basic helper functionality.
+A header-only library containing basic helper functionality.
 
 ## Features:
 - Basic CMake functions
