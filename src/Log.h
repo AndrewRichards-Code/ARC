@@ -147,3 +147,19 @@ namespace arc
 		inline static Log::Level s_Level = Log::Level::ALL;
 	};
 }
+
+#if defined(_DEBUG) || defined(ARC_ENABLE_LOGGONG)
+
+#define ARC_FATAL(errorCode, fmt, ...) arc::Log::PrintMessage(arc::Log::Level::FATAL, __FILE__, __LINE__, ARC_FUNCSIG, errorCode, fmt, __VA_ARGS__);
+#define ARC_ERROR(errorCode, fmt, ...) arc::Log::PrintMessage(arc::Log::Level::ERROR, __FILE__, __LINE__, ARC_FUNCSIG, errorCode, fmt, __VA_ARGS__);
+#define ARC_WARN(errorCode, fmt, ...) arc::Log::PrintMessage(arc::Log::Level::WARN, __FILE__, __LINE__, ARC_FUNCSIG, errorCode, fmt, __VA_ARGS__);
+#define ARC_INFO(errorCode, fmt, ...) arc::Log::PrintMessage(arc::Log::Level::INFO, __FILE__, __LINE__, ARC_FUNCSIG, errorCode, fmt, __VA_ARGS__);
+
+#else
+
+#define ARC_FATAL(errorCode, fmt, ...)
+#define ARC_ERROR(errorCode, fmt, ...)
+#define ARC_WARN(errorCode, fmt, ...)
+#define ARC_INFO(errorCode, fmt, ...)
+
+#endif

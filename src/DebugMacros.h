@@ -4,13 +4,13 @@
 
 //Printf 
 #if defined(_DEBUG)
-#if !defined(__ANDROID__)
-#define ARC_PRINTF(fmt, ...) printf_s((fmt), __VA_ARGS__)
+	#if !defined(__ANDROID__)
+		#define ARC_PRINTF(fmt, ...) printf_s((fmt), __VA_ARGS__)
+	#else
+		#define ARC_PRINTF(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "ARC_LOG", fmt, __VA_ARGS__)
+	#endif
 #else
-#define ARC_PRINTF(fmt, ...) __android_log_print(ANDROID_LOG_DEBUG, "ARC_LOG", fmt, __VA_ARGS__)
-#endif
-#else
-#define ARC_PRINTF(fmt, ...)
+	#define ARC_PRINTF(fmt, ...)
 #endif
 
 //Debugbreak
@@ -23,9 +23,9 @@
 
 //Asset
 #if defined(_DEBUG) || defined(ARC_ENABLE_ASSERT)
-	#define ARC_ASSERT(x, ...) { if(!(x)) { ARC_DEBUG_BREAK(); } }
+	#define ARC_ASSERT(x) { if(!(x)) { ARC_DEBUG_BREAK; } }
 #else
-	#define ARC_ASSERT(x, ...)
+	#define ARC_ASSERT(x)
 #endif
 
 //Function signature

@@ -12,6 +12,7 @@ A header-only library containing basic helper functionality.
 - Basic Logging system
 - Scope and Ref wrappers over std::unique_ptr and std::shared_ptr
 - String conversion helpers
+- Windows Error messaging
 
 ## Build Tools with Visual Studio:
 ### Windows x64:

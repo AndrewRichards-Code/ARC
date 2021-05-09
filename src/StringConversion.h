@@ -6,7 +6,7 @@
 
 namespace arc
 {
-	std::string ToString(const std::wstring& wstring)
+	static std::string ToString(const std::wstring& wstring)
 	{
 		char* str = new char[wstring.size() + 1];
 		wcstombs_s(nullptr, str, wstring.size() + 1, wstring.c_str(), wstring.size() + 1);
@@ -15,7 +15,7 @@ namespace arc
 		return result;
 	}
 
-	std::wstring ToWString(const std::string& string)
+	static std::wstring ToWString(const std::string& string)
 	{
 		wchar_t* wstr = new wchar_t[string.size() + 1];
 		mbstowcs_s(nullptr, wstr, string.size() + 1, string.c_str(), string.size() + 1);
@@ -24,7 +24,7 @@ namespace arc
 		return result;
 	}
 
-	std::string ToUpper(const std::string& string)
+	static std::string ToUpper(const std::string& string)
 	{
 		std::string str = string;
 		std::transform(str.begin(), str.end(), str.begin(),
@@ -32,7 +32,7 @@ namespace arc
 		return str;
 	}
 
-	std::wstring ToUpper(const std::wstring& wstring)
+	static std::wstring ToUpper(const std::wstring& wstring)
 	{
 		std::wstring wstr = wstring;
 		std::transform(wstr.begin(), wstr.end(), wstr.begin(),
@@ -40,7 +40,7 @@ namespace arc
 		return wstr;
 	}
 
-	std::string ToLower(const std::string& string)
+	static std::string ToLower(const std::string& string)
 	{
 		std::string str = string;
 		std::transform(str.begin(), str.end(), str.begin(),
@@ -48,7 +48,7 @@ namespace arc
 		return str;
 	}
 
-	std::wstring ToLower(const std::wstring& wstring)
+	static std::wstring ToLower(const std::wstring& wstring)
 	{
 		std::wstring wstr = wstring;
 		std::transform(wstr.begin(), wstr.end(), wstr.begin(),
