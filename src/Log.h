@@ -18,8 +18,8 @@ namespace arc
 	{
 		//Function Pointers
 	private:
-		typedef std::string (*PFN_ErrorCodeToString)(uint64_t errorCode);
-		inline static PFN_ErrorCodeToString ErrorCodeToString;
+		typedef std::string (*PFN_ErrorCodeToString)(int64_t errorCode);
+		PFN_ErrorCodeToString pfnErrorCodeToString;
 
 		//enums/structs
 	public:
@@ -35,8 +35,12 @@ namespace arc
 
 		//Methods
 	public:
+		Log(const std::string& logName = "ARC")
+			:m_LogName(logName) {}
+		~Log() = default;
+
 		template<typename... Args>
-		static void PrintMessage(Level level, const char* __file__, int __line__, const char* __funcsig__, uint64_t errorCode, const char* format, Args&&... args)
+		void PrintMessage(Level level, const char* __file__, int __line__, const char* __funcsig__, int64_t errorCode, const char* format, Args&&... args)
 		{
 			std::string msg = GenerateMessage(level, __file__, __line__, __funcsig__, errorCode, format, std::forward<Args>(args)...);
 
@@ -48,17 +52,26 @@ namespace arc
 				PrintColourFormatString(msg, fColour, format);
 			}
 		}
+		
+		void SetLevel(Level level = Level::NONE)
+		{
+			m_Level = level;
+		}
+		void SetErrorCodeToStringFunction(PFN_ErrorCodeToString pfn)
+		{
+			pfnErrorCodeToString = pfn;
+		}
 
 	private:
-		static const std::string GenerateMessage(Level level, const char* __file__, int __line__, const char* __funcsig__, uint64_t errorCode, const char* format, ...)
+		const std::string GenerateMessage(Level level, const char* __file__, int __line__, const char* __funcsig__, int64_t errorCode, const char* format, ...)
 		{
-			if (level == Level::NONE || (level & s_Level) == Level::NONE)
+			if (level == Level::NONE || (level & m_Level) == Level::NONE)
 				return "";
 
-			std::string buffer(BufferSize, 0);
+			std::string buffer(m_BufferSize, 0);
 			va_list args;
 			va_start(args, format);
-			vsprintf_s(&buffer[0], BufferSize, format, args);
+			vsprintf_s(&buffer[0], m_BufferSize, format, args);
 			va_end(args);
 
 			std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
@@ -83,23 +96,13 @@ namespace arc
 			dateTimeSS << " UTC";
 
 			std::stringstream resultSS; 
-			resultSS << "[" << dateTimeSS.str() << "][" << LogLevelToString(level) << ": " << __file__ << "(" << std::to_string(__line__) << "): " << __funcsig__ << "][ErrorCode: " << (ErrorCodeToString ? ErrorCodeToString(errorCode) : std::to_string(errorCode)) << "]: " << buffer;
+			resultSS << "[" << dateTimeSS.str() << "][" << m_LogName << ": " << LogLevelToString(level) << ": " << __file__ << "(" << std::to_string(__line__) << "): " << __funcsig__ << "][ErrorCode: " << (pfnErrorCodeToString ? pfnErrorCodeToString(errorCode) : std::to_string(errorCode)) << "]: " << buffer;
 
 			return resultSS.str();
 		}
-	public:
-		static void SetLevel(Level level = Level::NONE)
-		{
-			s_Level = level;
-		}
-
-		static void SetErrorCodeToString(PFN_ErrorCodeToString pfn)
-		{
-			ErrorCodeToString = pfn;
-		}
-
+	
 	private:
-		static const std::string LogLevelToString(Level level) noexcept
+		const std::string LogLevelToString(Level level) noexcept
 		{
 			switch (level)
 			{
@@ -118,8 +121,7 @@ namespace arc
 				return "ALL";
 			};
 		}
-
-		static void GetConsoleOutputColour(Level level, ForegroundColour& fColour, FormatAtrributes& format)
+		void GetConsoleOutputColour(Level level, ForegroundColour& fColour, FormatAtrributes& format)
 		{
 			format = FormatAtrributes::Default;
 
@@ -143,17 +145,20 @@ namespace arc
 
 	//Member
 	private:
-		constexpr inline static size_t BufferSize = 1024Ui64;
-		inline static Log::Level s_Level = Log::Level::ALL;
+		const size_t m_BufferSize = 1024Ui64;
+		Log::Level m_Level = Log::Level::ALL;
+		std::string m_LogName;
 	};
 }
 
 #if defined(_DEBUG) || defined(ARC_ENABLE_LOGGONG)
+static arc::Log arcDefaultLog;
+#define ARC_LOG_INSTANCE arcDefaultLog
 
-#define ARC_FATAL(errorCode, fmt, ...) arc::Log::PrintMessage(arc::Log::Level::FATAL, __FILE__, __LINE__, ARC_FUNCSIG, errorCode, fmt, __VA_ARGS__);
-#define ARC_ERROR(errorCode, fmt, ...) arc::Log::PrintMessage(arc::Log::Level::ERROR, __FILE__, __LINE__, ARC_FUNCSIG, errorCode, fmt, __VA_ARGS__);
-#define ARC_WARN(errorCode, fmt, ...) arc::Log::PrintMessage(arc::Log::Level::WARN, __FILE__, __LINE__, ARC_FUNCSIG, errorCode, fmt, __VA_ARGS__);
-#define ARC_INFO(errorCode, fmt, ...) arc::Log::PrintMessage(arc::Log::Level::INFO, __FILE__, __LINE__, ARC_FUNCSIG, errorCode, fmt, __VA_ARGS__);
+#define ARC_FATAL(errorCode, fmt, ...) ARC_LOG_INSTANCE.PrintMessage(arc::Log::Level::FATAL, __FILE__, __LINE__, ARC_FUNCSIG, errorCode, fmt, __VA_ARGS__)
+#define ARC_ERROR(errorCode, fmt, ...) ARC_LOG_INSTANCE.PrintMessage(arc::Log::Level::ERROR, __FILE__, __LINE__, ARC_FUNCSIG, errorCode, fmt, __VA_ARGS__)
+#define ARC_WARN(errorCode, fmt, ...) ARC_LOG_INSTANCE.PrintMessage(arc::Log::Level::WARN, __FILE__, __LINE__, ARC_FUNCSIG, errorCode, fmt, __VA_ARGS__)
+#define ARC_INFO(errorCode, fmt, ...) ARC_LOG_INSTANCE.PrintMessage(arc::Log::Level::INFO, __FILE__, __LINE__, ARC_FUNCSIG, errorCode, fmt, __VA_ARGS__)
 
 #else
 
