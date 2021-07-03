@@ -6,7 +6,9 @@
 #if defined(_MSC_VER)
 #pragma warning(disable : 4100) //Disables 'Unreferenced formal parameter' warning C4100
 
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
 #define NOMINMAX
 #include <Windows.h>
 #endif

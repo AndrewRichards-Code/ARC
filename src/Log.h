@@ -47,9 +47,9 @@ namespace arc
 			if (!msg.empty())
 			{
 				ForegroundColour fColour = ForegroundColour::Default;
-				FormatAtrributes format = FormatAtrributes::Default;
-				GetConsoleOutputColour(level, fColour, format);
-				PrintColourFormatString(msg, fColour, format);
+				FormatAtrributes fAtrrib = FormatAtrributes::Default;
+				GetConsoleOutputColour(level, fColour, fAtrrib);
+				PrintColourFormatString(msg, fColour, fAtrrib);
 			}
 		}
 		
