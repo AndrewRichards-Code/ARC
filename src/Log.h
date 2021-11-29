@@ -71,7 +71,11 @@ namespace arc
 			std::string buffer(m_BufferSize, 0);
 			va_list args;
 			va_start(args, format);
-			vsprintf_s(&buffer[0], m_BufferSize, format, args);
+		#if defined(_MSC_VER)
+			vsprintf_s(buffer.data(), m_BufferSize, format, args);
+		#else
+			vsnprintf(buffer.data(), m_BufferSize, format, args);
+		#endif
 			va_end(args);
 
 			std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
@@ -145,7 +149,7 @@ namespace arc
 
 	//Member
 	private:
-		const size_t m_BufferSize = 1024Ui64;
+		const size_t m_BufferSize = 1024;
 		Log::Level m_Level = Log::Level::ALL;
 		std::string m_LogName;
 	};

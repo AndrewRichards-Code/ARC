@@ -9,7 +9,11 @@ namespace arc
 	static std::string ToString(const std::wstring& wstring)
 	{
 		char* str = new char[wstring.size() + 1];
+	#if(_WIN32)
 		wcstombs_s(nullptr, str, wstring.size() + 1, wstring.c_str(), wstring.size() + 1);
+	#else
+		wcstombs(str, wstring.c_str(), wstring.size() + 1);
+	#endif
 		std::string result(str);
 		delete[] str;
 		return result;
@@ -18,7 +22,11 @@ namespace arc
 	static std::wstring ToWString(const std::string& string)
 	{
 		wchar_t* wstr = new wchar_t[string.size() + 1];
+	#if(_WIN32)
 		mbstowcs_s(nullptr, wstr, string.size() + 1, string.c_str(), string.size() + 1);
+	#else
+		mbstowcs(wstr, string.c_str(), string.size() + 1);
+	#endif
 		std::wstring result(wstr);
 		delete[] wstr;
 		return result;
