@@ -14,13 +14,3 @@
 	#define ARC_IMPORT
 	#pragma warning Unknown dynamic link import/export semantics.
 #endif
-
-#if defined(ARC_DLL)
-	#if defined(ARC_BUILD_DLL)
-	#define ARC_API ARC_EXPORT
-	#else
-	#define ARC_API ARC_IMPORT
-	#endif
-#else
-	#define ARC_API
-#endif
