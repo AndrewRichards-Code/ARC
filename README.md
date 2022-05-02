@@ -8,7 +8,7 @@ A header-only library containing basic helper functionality.
 - Enum Class Bitwise operators
 - File Loader for text and binary
 - Library export attributes
-- Basic Filesystem helpers
+- Basic helpers
 - Basic Logging system
 - Scope and Ref wrappers over std::unique_ptr and std::shared_ptr
 - String conversion helpers
