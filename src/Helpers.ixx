@@ -1,7 +1,7 @@
-#pragma once
-#include <vector>
+export module ARC:Helpers;
+import std.core;
 
-namespace arc
+export namespace arc
 {
 	template<typename T>
 	bool FindInVector(const std::vector<T>& container, const T& value)

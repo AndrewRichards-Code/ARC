@@ -1,5 +1,5 @@
 # ARC
-A header-only library containing basic helper functionality.
+A module library containing basic helper functionality.
 
 ## Features:
 - Basic CMake functions
@@ -17,8 +17,8 @@ A header-only library containing basic helper functionality.
 ## Build Tools with Visual Studio:
 ### Windows x64:
 - No project available to build.
-- ISO C++ 17 is required.
+- ISO C++ 20 is required with MSVC's Experimental C++ Standard Library Modules.
 
 ### Linux x64:
 - No project available to build.
-- ISO C++ 17 is required.
+- ISO C++ 20 is required.

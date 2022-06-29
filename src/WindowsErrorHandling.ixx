@@ -1,17 +1,12 @@
-#pragma once
+module;
+#include "WindowsInclude.h"
 
-#if defined(_MSC_VER)
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-#define NOMINMAX
-#include <Windows.h>
+export module ARC:WindowsErrorHandling;
+import std.core;
 
-#include <string>
-
-namespace arc
+export namespace arc
 {
-	static std::string GetLastErrorToString(DWORD error)
+	const std::string GetLastErrorToString(DWORD error)
 	{
 		if (error != 0)
 		{
@@ -30,4 +25,3 @@ namespace arc
 		return std::string();
 	}
 }
-#endif

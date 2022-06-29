@@ -1,9 +1,12 @@
-#pragma once
-#include "Log.h"
-#include "WindowsErrorHandling.h"
-#include "StringConversion.h"
+module;
+#include "WindowsInclude.h"
 
-namespace arc
+export module ARC:DynamicLibrary;
+import std.core;
+import :Log;
+import :WindowsErrorHandling;
+
+export namespace arc
 {
 	class DynamicLibrary
 	{
@@ -30,13 +33,13 @@ namespace arc
 			if (!libraryHandle)
 			{
 				DWORD errorCode = GetLastError();
-				ARC_WARN(errorCode, "%s does not exist. GetLastError: %s", libraryFilepath.c_str(), GetLastErrorToString(errorCode).c_str());
+				ARC_WARN(errorCode, "{} does not exist. GetLastError: {}", libraryFilepath, GetLastErrorToString(errorCode));
 			}
 		#elif defined(__linux__)
 			libraryHandle = dlopen(libraryFilepath.c_str(), RTLD_NOW | RTLD_NOLOAD);
 			if (!libraryHandle)
 			{
-				ARC_WARN(0, "%s does not exist. dlerror: %s", libraryFilepath.c_str(), dlerror());
+				ARC_WARN(0, "{} does not exist. dlerror: {}", libraryFilepath, dlerror());
 			}
 		#endif
 
@@ -52,16 +55,17 @@ namespace arc
 			if (!success)
 			{
 				DWORD errorCode = GetLastError();
-				ARC_WARN(errorCode, "0x%x is not valid. GetLastError: %s", libraryHandle, GetLastErrorToString(errorCode).c_str());
+				ARC_WARN(errorCode, "{:#018x} is not valid. GetLastError: {}", (uint64_t)libraryHandle, GetLastErrorToString(errorCode));
 			}
+			libraryHandle = 0;
 		#elif defined(__linux__)
 			success = (dlclose(libraryHandle) == 0);
 			if (!success)
 			{
-				ARC_WARN(0, "0x%x is not valid. dlerror: %s", libraryHandle, dlerror());
+				ARC_WARN(0, "{:#x} is not valid. dlerror: {}", (uint64_t)libraryHandle, dlerror());
 			}
+			libraryHandle = nullptr;
 		#endif
-
 			return success;
 		}
 
@@ -74,13 +78,13 @@ namespace arc
 			if (!pfn)
 			{
 				DWORD errorCode = GetLastError();
-				ARC_WARN(errorCode, "Can not load function: %s. GetLastError: %s", functionName.c_str(), GetLastErrorToString(errorCode).c_str());
+				ARC_WARN(errorCode, "Can not load function: {}. GetLastError: {}", functionName, GetLastErrorToString(errorCode));
 			}
 		#elif defined(__linux__)
 			pfn = dlsym(libraryHandle, functionName.c_str());
 			if (!pfn)
 			{
-				ARC_WARN(0, "Can not load function: %s. dlerror: %s", functionName.c_str(), dlerror());
+				ARC_WARN(0, "Can not load function: {}. dlerror: {}", functionName, dlerror());
 			}
 		#endif
 

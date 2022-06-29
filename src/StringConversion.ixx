@@ -1,12 +1,10 @@
-#pragma once
+export module ARC:StringConversion;
+import std.core;
+import <cwctype>;
 
-#include <string>
-#include <cwctype>
-#include <algorithm>
-
-namespace arc
+export namespace arc
 {
-	static std::string ToString(const std::wstring& wstring)
+	std::string ToString(const std::wstring& wstring)
 	{
 		char* str = new char[wstring.size() + 1];
 	#if(_WIN32)
@@ -19,7 +17,7 @@ namespace arc
 		return result;
 	}
 
-	static std::wstring ToWString(const std::string& string)
+	std::wstring ToWString(const std::string& string)
 	{
 		wchar_t* wstr = new wchar_t[string.size() + 1];
 	#if(_WIN32)
@@ -32,7 +30,7 @@ namespace arc
 		return result;
 	}
 
-	static std::string ToUpper(const std::string& string)
+	std::string ToUpper(const std::string& string)
 	{
 		std::string str = string;
 		std::transform(str.begin(), str.end(), str.begin(),
@@ -40,7 +38,7 @@ namespace arc
 		return str;
 	}
 
-	static std::wstring ToUpper(const std::wstring& wstring)
+	std::wstring ToUpper(const std::wstring& wstring)
 	{
 		std::wstring wstr = wstring;
 		std::transform(wstr.begin(), wstr.end(), wstr.begin(),
@@ -48,7 +46,7 @@ namespace arc
 		return wstr;
 	}
 
-	static std::string ToLower(const std::string& string)
+	std::string ToLower(const std::string& string)
 	{
 		std::string str = string;
 		std::transform(str.begin(), str.end(), str.begin(),
@@ -56,7 +54,7 @@ namespace arc
 		return str;
 	}
 
-	static std::wstring ToLower(const std::wstring& wstring)
+	std::wstring ToLower(const std::wstring& wstring)
 	{
 		std::wstring wstr = wstring;
 		std::transform(wstr.begin(), wstr.end(), wstr.begin(),

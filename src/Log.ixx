@@ -1,18 +1,12 @@
-#pragma once
+module;
+#include <source_location>
 
-#include <string>
-#include <iomanip>
-#include <sstream>
-#include "../dep/DATE/date.h"
+export module ARC:Log;
+import std.core;
+import :EnumClassBitwiseOperators;
+import :ConsoleOutputColours;
 
-#include "ConsoleOutputColours.h"
-#include "EnumClassBitwiseOperators.h"
-
-#ifdef ERROR //Found in wingdi.h
-#undef ERROR
-#endif
-
-namespace arc 
+export namespace arc 
 {
 	class Log
 	{
@@ -40,7 +34,7 @@ namespace arc
 		~Log() = default;
 
 		template<typename... Args>
-		void PrintMessage(Level level, const char* __file__, int __line__, const char* __funcsig__, int64_t errorCode, const char* format, Args&&... args)
+		void PrintMessage(Level level, const char* __file__, int __line__, const char* __funcsig__, int64_t errorCode, const std::string_view& format, Args&&... args)
 		{
 			std::string msg = GenerateMessage(level, __file__, __line__, __funcsig__, errorCode, format, std::forward<Args>(args)...);
 
@@ -63,32 +57,27 @@ namespace arc
 		}
 
 	private:
-		const std::string GenerateMessage(Level level, const char* __file__, int __line__, const char* __funcsig__, int64_t errorCode, const char* format, ...)
+		template<typename... Args>
+		const std::string GenerateMessage(Level level, const char* __file__, int __line__, const char* __funcsig__, int64_t errorCode, const std::string_view& format, Args&&... args)
 		{
 			if (level == Level::NONE || (level & m_Level) == Level::NONE)
 				return "";
 
-			std::string buffer(m_BufferSize, 0);
-			va_list args;
-			va_start(args, format);
-		#if defined(_MSC_VER)
-			vsprintf_s(buffer.data(), m_BufferSize, format, args);
-		#else
-			vsnprintf(buffer.data(), m_BufferSize, format, args);
-		#endif
-			va_end(args);
+			std::string buffer = std::vformat(format, std::make_format_args(args...));
+			
+			using namespace std::chrono;
+			system_clock::time_point now = system_clock::now();
+			time_point day = floor<days>(now);
+			year_month_day ymd = year_month_day(day);
+			hh_mm_ss<milliseconds> time(duration_cast<milliseconds>(now - day));
 
-			std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-			auto day = date::floor<date::days>(now);
-			auto ymd = date::year_month_day(day);
-			auto time = date::make_time(std::chrono::duration_cast<std::chrono::milliseconds>(now - day));
 			std::stringstream dateTimeSS;
 			dateTimeSS << std::setfill('0');
-			dateTimeSS << std::setw(4) << std::to_string(int(ymd.year()));
+			dateTimeSS << std::setw(4) << std::to_string(ymd.year().operator int());
 			dateTimeSS << std::setw(1) << "/";
-			dateTimeSS << std::setw(2) << std::to_string(unsigned(ymd.month()));
+			dateTimeSS << std::setw(2) << std::to_string(ymd.month().operator unsigned int());
 			dateTimeSS << std::setw(1) << "/";
-			dateTimeSS << std::setw(2) << std::to_string(unsigned(ymd.day()));
+			dateTimeSS << std::setw(2) << std::to_string(ymd.day().operator unsigned int());
 			dateTimeSS << std::setw(1) << " ";
 			dateTimeSS << std::setw(2) << std::to_string(time.hours().count());
 			dateTimeSS << std::setw(1) << ":";
@@ -149,26 +138,61 @@ namespace arc
 
 	//Member
 	private:
-		const size_t m_BufferSize = 1024;
 		Log::Level m_Level = Log::Level::ALL;
 		std::string m_LogName;
 	};
-}
 
-#if defined(_DEBUG) || defined(ARC_ENABLE_LOGGONG)
-static arc::Log arcDefaultLog;
-#define ARC_LOG_INSTANCE arcDefaultLog
+#if defined(_DEBUG) || defined(ARC_ENABLE_LOGGING)
+	
+	arc::Log arcDefaultLog;
 
-#define ARC_FATAL(errorCode, fmt, ...) ARC_LOG_INSTANCE.PrintMessage(arc::Log::Level::FATAL, __FILE__, __LINE__, ARC_FUNCSIG, errorCode, fmt, __VA_ARGS__)
-#define ARC_ERROR(errorCode, fmt, ...) ARC_LOG_INSTANCE.PrintMessage(arc::Log::Level::ERROR, __FILE__, __LINE__, ARC_FUNCSIG, errorCode, fmt, __VA_ARGS__)
-#define ARC_WARN(errorCode, fmt, ...) ARC_LOG_INSTANCE.PrintMessage(arc::Log::Level::WARN, __FILE__, __LINE__, ARC_FUNCSIG, errorCode, fmt, __VA_ARGS__)
-#define ARC_INFO(errorCode, fmt, ...) ARC_LOG_INSTANCE.PrintMessage(arc::Log::Level::INFO, __FILE__, __LINE__, ARC_FUNCSIG, errorCode, fmt, __VA_ARGS__)
+	struct FormatWithSourceLocation 
+	{
+		const char* format;
+		std::source_location location;
+
+		FormatWithSourceLocation(const char* format, const std::source_location& location = std::source_location::current())
+			:format(format), location(location) {}
+	};
+
+	template<typename... Args>
+	void ARC_FATAL(int64_t errorCode, const FormatWithSourceLocation& format, Args&&... args)
+	{
+		arcDefaultLog.PrintMessage(arc::Log::Level::FATAL, format.location.file_name(), format.location.line(), format.location.function_name(), errorCode, format.format, std::forward<Args>(args)...);
+	}
+
+	template<typename... Args>
+	void ARC_ERROR(int64_t errorCode, const FormatWithSourceLocation& format, Args&&... args)
+	{
+		arcDefaultLog.PrintMessage(arc::Log::Level::ERROR, format.location.file_name(), format.location.line(), format.location.function_name(), errorCode, format.format, std::forward<Args>(args)...);
+	}
+
+	template<typename... Args>
+	void ARC_WARN(int64_t errorCode, const FormatWithSourceLocation& format, Args&&... args)
+	{
+		arcDefaultLog.PrintMessage(arc::Log::Level::WARN, format.location.file_name(), format.location.line(), format.location.function_name(), errorCode, format.format, std::forward<Args>(args)...);
+	}
+
+	template<typename... Args>
+	void ARC_INFO(int64_t errorCode, const FormatWithSourceLocation& format, Args&&... args)
+	{
+		arcDefaultLog.PrintMessage(arc::Log::Level::INFO, format.location.file_name(), format.location.line(), format.location.function_name(), errorCode, format.format, std::forward<Args>(args)...);
+	}
 
 #else
 
-#define ARC_FATAL(errorCode, fmt, ...)
-#define ARC_ERROR(errorCode, fmt, ...)
-#define ARC_WARN(errorCode, fmt, ...)
-#define ARC_INFO(errorCode, fmt, ...)
+	template<typename... Args>
+	void ARC_FATAL(int64_t errorCode, const FormatWithSourceLocation& format, Args&&... args) {}
+	
+	template<typename... Args>
+	void ARC_ERROR(int64_t errorCode, const FormatWithSourceLocation& format, Args&&... args) {}
+	
+	template<typename... Args>
+	void ARC_WARN(int64_t errorCode, const FormatWithSourceLocation& format, Args&&... args) {}
+	
+	template<typename... Args>
+	void ARC_INFO(int64_t errorCode, const FormatWithSourceLocation& format, Args&&... args) {}
 
 #endif
+
+}

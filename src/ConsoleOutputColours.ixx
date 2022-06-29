@@ -1,17 +1,9 @@
-#pragma once
-
+module;
 #include "DebugMacros.h"
-#include <string>
+#include "WindowsInclude.h"
 
-#if defined(_MSC_VER)
-#pragma warning(disable : 4100) //Disables 'Unreferenced formal parameter' warning C4100
-
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-#define NOMINMAX
-#include <Windows.h>
-#endif
+export module ARC:ConsoleOutputColours;
+import std.core;
 
 namespace arc
 {
@@ -80,7 +72,7 @@ namespace arc
 		Hidden = 28
 	};
 
-	static void PrintColourFormatString(const std::string& str, 
+	void PrintColourFormatString(const std::string& str, 
 		ForegroundColour fColour = ForegroundColour::Default, 
 		FormatAtrributes format = FormatAtrributes::Default, 
 		BackgroundColour bColour = BackgroundColour::Default, 
