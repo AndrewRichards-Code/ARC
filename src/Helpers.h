@@ -10,7 +10,13 @@ namespace arc
 	}
 
 	template<typename T>
-	std::vector<T>::const_iterator FindPositionInVector(const std::vector<T>& container, const T& value)
+	std::vector<T>::const_iterator FindPositionInVectorConst(const std::vector<T>& container, const T& value)
+	{
+		return std::find(container.cbegin(), container.cend(), value);
+	}
+
+	template<typename T>
+	std::vector<T>::iterator FindPositionInVector(std::vector<T>& container, const T& value)
 	{
 		return std::find(container.begin(), container.end(), value);
 	}
