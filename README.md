@@ -4,14 +4,15 @@ A header-only library containing basic helper functionality.
 ## Features:
 - Basic CMake functions
 - Debug Macros
-- Dynamics Loading of Libraries
+- Dynamic Loading of Libraries
 - Enum Class Bitwise operators
-- File Loader for text and binary
+- File Loader and Saver for text and binary
 - Library export attributes
 - Basic helpers
 - Basic Logging system
 - Scope and Ref wrappers over std::unique_ptr and std::shared_ptr
 - String conversion helpers
+- Visual Studio Debug Output wrapper class
 - Windows Error messaging
 
 ## Build Tools with Visual Studio:
