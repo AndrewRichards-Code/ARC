@@ -68,15 +68,17 @@ namespace arc
 			if (level == Level::NONE || (level & m_Level) == Level::NONE)
 				return "";
 
-			std::string buffer(m_BufferSize, 0);
+			char* bufferData = new char[m_BufferSize];
 			va_list args;
 			va_start(args, format);
 		#if defined(_MSC_VER)
-			vsprintf_s(buffer.data(), m_BufferSize, format, args);
+			vsprintf_s(bufferData, m_BufferSize, format, args);
 		#else
-			vsnprintf(buffer.data(), m_BufferSize, format, args);
+			vsnprintf(bufferData, m_BufferSize, format, args);
 		#endif
 			va_end(args);
+			std::string buffer = bufferData;
+			delete[] bufferData;
 
 			std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
 			auto day = date::floor<date::days>(now);
@@ -118,9 +120,9 @@ namespace arc
 			case Log::Level::ERROR:
 				return "ERROR";
 			case Log::Level::WARN:
-				return "WARN";
+				return "WARNING";
 			case Log::Level::INFO:
-				return "INFO";
+				return "INFORMATION";
 			case Log::Level::ALL:
 				return "ALL";
 			};

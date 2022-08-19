@@ -173,7 +173,7 @@ namespace arc
 		}
 
 		SetConsoleTextAttribute(hConsole, (dwFColour + dwBColour));
-		ARC_PRINTF("%s\n", str.c_str());
+		std::cout << str << std::endl;
 		SetConsoleTextAttribute(hConsole, (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED));
 
 #elif defined(__linux__)
@@ -185,9 +185,9 @@ namespace arc
 		output += str;
 		output += "\033[";
 		output += std::to_string(static_cast<uint32_t>(reset)) + std::string("m");
-		ARC_PRINTF("%s\n", output.c_str());
+		std::cout << output << std::endl;
 #else
-		ARC_PRINTF("%s\n", str.c_str());
+		std::cout << str << std::endl;
 #endif
 	}
 }
