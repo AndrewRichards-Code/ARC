@@ -3,6 +3,7 @@ A header-only library containing basic helper functionality.
 
 ## Features:
 - Basic CMake functions
+- Date And Time
 - Debug Macros
 - Dynamic Loading of Libraries
 - Enum Class Bitwise operators
@@ -18,8 +19,8 @@ A header-only library containing basic helper functionality.
 ## Build Tools with Visual Studio:
 ### Windows x64:
 - No project available to build.
-- ISO C++ 17 is required.
+- ISO C++ 20 is required.
 
 ### Linux x64:
 - No project available to build.
-- ISO C++ 17 is required.
+- ISO C++ 20 is required.

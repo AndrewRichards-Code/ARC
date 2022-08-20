@@ -1,11 +1,7 @@
 #pragma once
 
-#include <string>
-#include <iomanip>
-#include <sstream>
-#include "../dep/DATE/date.h"
-
 #include "ConsoleOutputColours.h"
+#include "DataAndTime.h"
 #include "EnumClassBitwiseOperators.h"
 
 #ifdef ERROR //Found in wingdi.h
@@ -80,29 +76,10 @@ namespace arc
 			std::string buffer = bufferData;
 			delete[] bufferData;
 
-			std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-			auto day = date::floor<date::days>(now);
-			auto ymd = date::year_month_day(day);
-			auto time = date::make_time(std::chrono::duration_cast<std::chrono::milliseconds>(now - day));
-			std::stringstream dateTimeSS;
-			dateTimeSS << std::setfill('0');
-			dateTimeSS << std::setw(4) << std::to_string(int(ymd.year()));
-			dateTimeSS << std::setw(1) << "/";
-			dateTimeSS << std::setw(2) << std::to_string(unsigned(ymd.month()));
-			dateTimeSS << std::setw(1) << "/";
-			dateTimeSS << std::setw(2) << std::to_string(unsigned(ymd.day()));
-			dateTimeSS << std::setw(1) << " ";
-			dateTimeSS << std::setw(2) << std::to_string(time.hours().count());
-			dateTimeSS << std::setw(1) << ":";
-			dateTimeSS << std::setw(2) << std::to_string(time.minutes().count());
-			dateTimeSS << std::setw(1) << ":";
-			dateTimeSS << std::setw(2) << std::to_string(time.seconds().count());
-			dateTimeSS << std::setw(1) << ".";
-			dateTimeSS << std::setw(3) << std::to_string(time.subseconds().count());
-			dateTimeSS << " UTC";
+			const std::string& dateTime = GetDateAndTime_LogMessage();
 
 			std::stringstream resultSS; 
-			resultSS << "[" << dateTimeSS.str() << "][" << m_LogName << ": " << LogLevelToString(level) << ": " << __file__ << "(" << std::to_string(__line__) << "): " << __funcsig__ << "][ErrorCode: " << (pfnErrorCodeToString ? pfnErrorCodeToString(errorCode) : std::to_string(errorCode)) << "]: " << buffer;
+			resultSS << "[" << dateTime << "][" << m_LogName << ": " << LogLevelToString(level) << ": " << __file__ << "(" << std::to_string(__line__) << "): " << __funcsig__ << "][ErrorCode: " << (pfnErrorCodeToString ? pfnErrorCodeToString(errorCode) : std::to_string(errorCode)) << "]: " << buffer;
 
 			return resultSS.str();
 		}

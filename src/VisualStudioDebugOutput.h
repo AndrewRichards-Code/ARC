@@ -84,7 +84,7 @@ namespace arc
 		}
 	};
 
-	typedef void(*PFN_DebugOutputCallback)(const char*);
+	typedef void(*PFN_DebugOutputCallback)(const std::string&);
 
 	class VisualStudioDebugOutput : public vsBufferedStringStreamBuf
 	{
@@ -114,7 +114,7 @@ namespace arc
 			std::cerr.rdbuf(m_old_cerr_buffer);
 		}
 
-		void SetLogFile(const char* logFilename)
+		void SetLogFile(const std::string& logFilename)
 		{
 			m_LogFile.open(logFilename);
 			if (m_LogFile.is_open())
@@ -141,6 +141,7 @@ namespace arc
 			if (m_OutputLogFile)
 			{
 				m_LogFile << string.c_str();
+				m_LogFile.flush();
 			}
 			if (m_PFN_DebugCallback)
 			{
