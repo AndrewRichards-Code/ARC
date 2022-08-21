@@ -89,7 +89,7 @@ namespace arc
 	class VisualStudioDebugOutput : public vsBufferedStringStreamBuf
 	{
 	public:
-		VisualStudioDebugOutput(bool outputWindow = true, const char* logFilename = nullptr, size_t bufferSize = (size_t)256 , PFN_DebugOutputCallback callback = nullptr)
+		VisualStudioDebugOutput(bool outputWindow = true, const char* logFilename = nullptr, size_t bufferSize = (size_t)2048 , PFN_DebugOutputCallback callback = nullptr)
 			:vsBufferedStringStreamBuf(bufferSize), m_OutputLogFile(false), m_old_cout_buffer(nullptr), m_old_cerr_buffer(nullptr), m_PFN_DebugCallback(callback)
 		{
 			m_OutputWindow = outputWindow;
@@ -140,12 +140,12 @@ namespace arc
 			}
 			if (m_OutputLogFile)
 			{
-				m_LogFile << string.c_str();
+				m_LogFile << string;
 				m_LogFile.flush();
 			}
 			if (m_PFN_DebugCallback)
 			{
-				m_PFN_DebugCallback(string.c_str());
+				m_PFN_DebugCallback(string);
 			}
 		}
 
