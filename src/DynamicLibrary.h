@@ -3,6 +3,10 @@
 #include "WindowsErrorHandling.h"
 #include "StringConversion.h"
 
+#if defined(__linux__)
+#include <dlfcn.h>
+#endif
+
 namespace arc
 {
 	class DynamicLibrary

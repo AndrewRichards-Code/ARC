@@ -2,9 +2,11 @@
 #include <string>
 #include <sstream>
 #include <chrono>
+#include "DebugMacros.h"
 
 namespace arc
 {
+#if ARC_CXX20
 	struct DateAndTimeData
 	{
 	public:
@@ -68,4 +70,8 @@ namespace arc
 
 		return dateTime.str();
 	}
+#else
+	static std::string GetDateAndTime_LogMessage() { return std::string(); }
+	static std::string GetDateAndTime_Filename() { return std::string(); }
+#endif
 }
