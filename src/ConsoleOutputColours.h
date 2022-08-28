@@ -184,7 +184,7 @@ namespace arc
 		std::cout << str << std::endl;
 		SetConsoleTextAttribute(hConsole, (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED));
 
-#elif defined(__linux__) || defined(__ANDROID__)
+#elif defined(__linux__) && ! defined(__ANDROID__)
 		std::string output;
 		output += "\033[";
 		output += std::to_string(static_cast<uint32_t>(format)) + std::string(";");
@@ -193,8 +193,12 @@ namespace arc
 		output += str;
 		output += "\033[";
 		output += std::to_string(static_cast<uint32_t>(reset)) + std::string("m");
-
 		std::cout << output << std::endl;
+
+#elif defined(__ANDROID__)
+		__android_log_write(ANDROID_LOG_INFO, "", str.c_str());
+		std::cout << str << std::endl;
+
 #else
 		std::cout << str << std::endl;
 #endif
