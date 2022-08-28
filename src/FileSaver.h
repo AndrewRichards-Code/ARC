@@ -14,7 +14,7 @@ namespace arc
 		std::string output;
 		if (!stream.is_open())
 		{
-			ARC_WARN(0, "Could not save file %s.", filepath);
+			ARC_WARN(0, "Could not save file %s.", filepath.c_str());
 		}
 		stream << contents;
 		stream.close();
@@ -25,7 +25,7 @@ namespace arc
 		std::ofstream stream(filepath, std::fstream::out | std::fstream::binary);
 		if (!stream.is_open())
 		{
-			ARC_WARN(0, "Could not save file %s.", filepath);
+			ARC_WARN(0, "Could not save file %s.", filepath.c_str());
 		}
 		std::streamoff size = static_cast<std::streamoff>(contents.size());
 		stream.write(contents.data(), size);

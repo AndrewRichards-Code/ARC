@@ -14,7 +14,7 @@ namespace arc
 		std::string output;
 		if (!stream.is_open())
 		{
-			ARC_WARN(0, "Could not read file %s. File does not exist.", filepath);
+			ARC_WARN(0, "Could not read file %s. File does not exist.", filepath.c_str());
 			return "";
 		}
 		std::string line;
@@ -32,7 +32,7 @@ namespace arc
 		std::ifstream stream(filepath, std::fstream::in | std::fstream::binary | std::fstream::ate);
 		if (!stream.is_open())
 		{
-			ARC_WARN(0, "Could not read file %s. File does not exist.", filepath);
+			ARC_WARN(0, "Could not read file %s. File does not exist.", filepath.c_str());
 			return {};
 		}
 		std::streamoff size = stream.tellg();
