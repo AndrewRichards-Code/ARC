@@ -64,13 +64,19 @@ namespace arc
 			if (level == Level::NONE || (level & m_Level) == Level::NONE)
 				return "";
 
-			char* bufferData = new char[m_BufferSize];
 			va_list args;
 			va_start(args, format);
 		#if defined(_MSC_VER)
-			vsprintf_s(bufferData, m_BufferSize, format, args);
+			size_t bufferSize = static_cast<size_t>(_vscprintf(format, args)) + 1;
+			char* bufferData = new char[bufferSize];
+			vsprintf_s(bufferData, bufferSize, format, args);
 		#else
-			vsnprintf(bufferData, m_BufferSize, format, args);
+			va_list args2;
+			va_copy(args2, args);
+			size_t bufferSize = static_cast<size_t>(vsnprintf(nullptr, 0, format, args2)) + 1;
+			va_end(args2);
+			char* bufferData = new char[bufferSize];
+			vsnprintf(bufferData, bufferSize, format, args);
 		#endif
 			va_end(args);
 			std::string buffer = bufferData;
@@ -128,7 +134,6 @@ namespace arc
 
 	//Member
 	private:
-		const size_t m_BufferSize = 1024;
 		Log::Level m_Level = Log::Level::ALL;
 		std::string m_LogName;
 	};
