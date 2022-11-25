@@ -15,6 +15,7 @@ A header-only library containing basic helper functionality.
 - String conversion helpers
 - Visual Studio Debug Output wrapper class
 - Windows Error messaging
+- Includes magic_enum by Neargye
 
 ## Build Tools with Visual Studio:
 ### Windows x64:
