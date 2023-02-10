@@ -20,6 +20,15 @@
 //Function signature
 #if defined(_WIN64)
 	#define ARC_FUNCSIG __FUNCSIG__
-#elif(__linux__)
+#elif defined(__linux__)
 	#define ARC_FUNCSIG __PRETTY_FUNCTION__
+#endif
+
+//C++ Versions
+#if defined(_WIN64)
+	#define ARC_CXX20 _HAS_CXX20
+	#define ARC_CXX17 _HAS_CXX17
+#elif defined(__linux__)
+	#define ARC_CXX20 (__cplusplus == 202002L)
+	#define ARC_CXX17 (__cplusplus == 201703L)
 #endif
