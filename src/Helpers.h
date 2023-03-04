@@ -26,4 +26,10 @@ namespace arc
 	{
 		return ((value & checkValue) == checkValue);
 	}
+
+	template<typename T>
+	typename T Align(T value, T alignment)
+	{
+		return (value + (alignment - 1)) & ~(alignment - 1);
+	};
 }
