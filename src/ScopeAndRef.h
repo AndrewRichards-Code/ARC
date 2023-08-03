@@ -22,3 +22,6 @@ constexpr Ref<T> CreateRef(Args&&... args)
 
 template<class _Ty1, class _Ty2>
 inline constexpr Ref<_Ty1> ref_cast(const Ref<_Ty2>& x) noexcept { return std::dynamic_pointer_cast<_Ty1>(x); }
+
+template<class _Ty1, class _Ty2>
+inline constexpr Ref<_Ty1> static_ref_cast(const Ref<_Ty2>& x) noexcept { return std::static_pointer_cast<_Ty1>(x); }
