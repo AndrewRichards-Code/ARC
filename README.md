@@ -1,5 +1,5 @@
 # ARC
-A header-only library containing basic helper functionality.
+A static library containing basic helper functionality.
 
 ## Features:
 - Basic CMake functions
@@ -15,13 +15,9 @@ A header-only library containing basic helper functionality.
 - String conversion helpers
 - Visual Studio Debug Output wrapper class
 - Windows Error messaging
+- Includes json by nlohmann
 - Includes magic_enum by Neargye
 
-## Build Tools with Visual Studio:
-### Windows x64:
-- No project available to build.
-- ISO C++ 20 is required.
-
-### Linux x64:
-- No project available to build.
-- ISO C++ 20 is required.
+## Requirements:
+- CMake
+- ISO C++ 20

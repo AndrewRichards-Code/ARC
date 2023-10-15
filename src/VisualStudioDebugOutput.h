@@ -22,7 +22,6 @@
 // Simul Software Ltd https://github.com/simul/Platform/
 
 #pragma once
-#include "Log.h"
 #include <fstream>
 
 namespace arc
@@ -30,58 +29,15 @@ namespace arc
 	class vsBufferedStringStreamBuf : public std::streambuf
 	{
 	public:
-		vsBufferedStringStreamBuf(size_t bufferSize)
-		{
-			if (bufferSize)
-			{
-				char* ptr = new char[bufferSize];
-				setp(ptr, ptr + bufferSize);
-			}
-			else
-			{
-				setp(0, 0);
-			}
-		}
-		virtual ~vsBufferedStringStreamBuf()
-		{
-			delete[] pbase();
-		}
+		vsBufferedStringStreamBuf(size_t bufferSize);
+		virtual ~vsBufferedStringStreamBuf();
 
 		virtual void WriteString(const std::string& string) = 0;
 
 	private:
-		int	overflow(int c) override
-		{
-			sync();
+		int	overflow(int c) override;
 
-			if (c != std::char_traits<char>::eof())
-			{
-				if (pbase() == epptr())
-				{
-					std::string temp;
-					temp += static_cast<char>(c);
-					WriteString(temp);
-				}
-				else
-				{
-					sputc(static_cast<char>(c));
-				}
-			}
-
-			return 0;
-		}
-
-		int	sync() override
-		{
-			if (pbase() != pptr())
-			{
-				std::string temp(pbase(), pptr());
-				WriteString(temp);
-				setp(pbase(), epptr());
-			}
-
-			return 0;
-		}
+		int	sync() override;
 	};
 
 	typedef void(*PFN_DebugOutputCallback)(const std::string&);
@@ -89,65 +45,13 @@ namespace arc
 	class VisualStudioDebugOutput : public vsBufferedStringStreamBuf
 	{
 	public:
-		VisualStudioDebugOutput(bool outputWindow = true, const char* logFilename = nullptr, size_t bufferSize = (size_t)2048 , PFN_DebugOutputCallback callback = nullptr)
-			:vsBufferedStringStreamBuf(bufferSize), m_OutputLogFile(false), m_old_cout_buffer(nullptr), m_old_cerr_buffer(nullptr), m_PFN_DebugCallback(callback)
-		{
-			m_OutputWindow = outputWindow;
+		VisualStudioDebugOutput(bool outputWindow = true, const char* logFilename = nullptr, size_t bufferSize = (size_t)2048, PFN_DebugOutputCallback callback = nullptr);
+		virtual ~VisualStudioDebugOutput();
 
-			if (logFilename)
-			{
-				SetLogFile(logFilename);
-			}
+		void SetLogFile(const std::string& logFilename);
+		void SetCallback(PFN_DebugOutputCallback callback);
 
-			m_old_cout_buffer = std::cout.rdbuf(this);
-			m_old_cerr_buffer = std::cerr.rdbuf(this);
-		}
-
-		virtual ~VisualStudioDebugOutput()
-		{
-			if (m_OutputLogFile)
-			{
-				m_LogFile << std::endl;
-				m_LogFile.close();
-			}
-			std::cout.rdbuf(m_old_cout_buffer);
-			std::cerr.rdbuf(m_old_cerr_buffer);
-		}
-
-		void SetLogFile(const std::string& logFilename)
-		{
-			m_LogFile.open(logFilename);
-			if (m_LogFile.is_open())
-			{
-				m_OutputLogFile = true;
-			}
-			else
-			{
-				ARC_ERROR(false, "Failed to create LogFile at location: %s", logFilename);
-			}
-		}
-
-		void SetCallback(PFN_DebugOutputCallback callback)
-		{
-			m_PFN_DebugCallback = callback;
-		}
-
-		virtual void WriteString(const std::string& string) override
-		{
-			if (m_OutputWindow)
-			{
-				OutputDebugStringA(string.c_str());
-			}
-			if (m_OutputLogFile)
-			{
-				m_LogFile << string;
-				m_LogFile.flush();
-			}
-			if (m_PFN_DebugCallback)
-			{
-				m_PFN_DebugCallback(string);
-			}
-		}
+		virtual void WriteString(const std::string& string) override;
 
 	protected:
 		bool m_OutputWindow;

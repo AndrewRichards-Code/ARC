@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stdio.h>
-
 //Debugbreak
 #if defined(_MSC_VER)
 	#define ARC_DEBUG_BREAK __debugbreak()

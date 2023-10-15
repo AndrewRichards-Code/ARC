@@ -1,7 +1,8 @@
 The licence declaration in LICENCE.txt does not cover the redistributed works in this repository. They contain their own licensing, and all redistributors of this repository are solely responsible to follow any and all redistribution requirements of the following works.
 
 Dependencies/Redistributions:
-magic_enum
+json: https://github.com/nlohmann/json
+magic_enum: https://github.com/Neargye/magic_enum
 
 Licence details for dependencies and redistributions of any headers, sources and binaries are located alongside those files or in relevant directory.
 Please support the original creators.
