@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.27)
 
 include("src/CMakeFunctions.cmake")
 
+#External Downloads
 file(DOWNLOAD 
 	https://github.com/nlohmann/json/releases/download/v3.11.2/json.hpp
 	EXPECTED_HASH SHA256=665fa14b8af3837966949e8eb0052d583e2ac105d3438baba9951785512cf921
