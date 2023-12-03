@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.27)
 
+message(STATUS "ARC")
+
 include("src/CMakeFunctions.cmake")
 
 #External Downloads
@@ -8,10 +10,12 @@ file(DOWNLOAD
 	EXPECTED_HASH SHA256=665fa14b8af3837966949e8eb0052d583e2ac105d3438baba9951785512cf921
 	"${CMAKE_CURRENT_SOURCE_DIR}/External/json/json.hpp"
 )
+message(STATUS "Downloaded json header file.")
 file(DOWNLOAD 
 	https://github.com/Neargye/magic_enum/releases/download/v0.9.3/magic_enum.hpp
 	"${CMAKE_CURRENT_SOURCE_DIR}/External/magic_enum/magic_enum.hpp"
 )
+message(STATUS "Downloaded magic_enum.")
 
 #Files
 set(HEADERS 
