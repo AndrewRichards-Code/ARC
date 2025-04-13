@@ -17,27 +17,27 @@
 
 using namespace arc;
 
-DynamicLibrary::LibraryHandle DynamicLibrary::Load(const std::string& libraryFilepath)
+DynamicLibrary::LibraryHandle DynamicLibrary::Load(const std::filesystem::path& libraryFilepath)
 {
 	LibraryHandle libraryHandle = 0;
 
 #if defined(_WIN64)
 	#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PC_APP)
-		std::wstring libraryName = ToWString(libraryFilepath.substr(libraryFilepath.find_last_of('/') + 1));
+		std::wstring libraryName = libraryFilepath.filename().wstring();
 		libraryHandle = LoadPackagedLibrary(libraryName.c_str(), 0);
 	#elif !defined(WINAPI_FAMILY) || (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP)
-		libraryHandle = LoadLibraryA(libraryFilepath.c_str());
+		libraryHandle = LoadLibraryA(libraryFilepath.generic_string().c_str());
 	#endif
 	if (!libraryHandle)
 	{
 		DWORD errorCode = GetLastError();
-		ARC_WARN(errorCode, "%s does not exist. GetLastError: %s", libraryFilepath.c_str(), GetLastErrorToString(errorCode).c_str());
+		ARC_WARN(errorCode, "%s does not exist. GetLastError: %s", libraryFilepath.generic_string().c_str(), GetLastErrorToString(errorCode).c_str());
 	}
 #elif defined(__linux__)
-	libraryHandle = dlopen(libraryFilepath.c_str(), RTLD_NOW | RTLD_NOLOAD);
+	libraryHandle = dlopen(libraryFilepath.generic_string().c_str(), RTLD_NOW | RTLD_NOLOAD);
 	if (!libraryHandle)
 	{
-		ARC_WARN(0, "%s does not exist. dlerror: %s", libraryFilepath.c_str(), dlerror());
+		ARC_WARN(0, "%s does not exist. dlerror: %s", libraryFilepath.generic_string().c_str(), dlerror());
 	}
 #endif
 

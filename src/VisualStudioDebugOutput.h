@@ -23,6 +23,7 @@
 
 #pragma once
 #include <fstream>
+#include <filesystem>
 
 namespace arc
 {
@@ -45,10 +46,10 @@ namespace arc
 	class VisualStudioDebugOutput : public vsBufferedStringStreamBuf
 	{
 	public:
-		VisualStudioDebugOutput(bool outputWindow = true, const char* logFilename = nullptr, size_t bufferSize = (size_t)2048, PFN_DebugOutputCallback callback = nullptr);
+		VisualStudioDebugOutput(bool outputWindow = true, const std::filesystem::path& logFilename = std::filesystem::path(), size_t bufferSize = (size_t)2048, PFN_DebugOutputCallback callback = nullptr);
 		virtual ~VisualStudioDebugOutput();
 
-		void SetLogFile(const std::string& logFilename);
+		void SetLogFile(const std::filesystem::path& logFilename);
 		void SetCallback(PFN_DebugOutputCallback callback);
 
 		virtual void WriteString(const std::string& string) override;

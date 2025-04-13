@@ -90,12 +90,12 @@ int	vsBufferedStringStreamBuf::sync()
 }
 
 
-VisualStudioDebugOutput::VisualStudioDebugOutput(bool outputWindow, const char* logFilename, size_t bufferSize, PFN_DebugOutputCallback callback)
+VisualStudioDebugOutput::VisualStudioDebugOutput(bool outputWindow, const std::filesystem::path& logFilename, size_t bufferSize, PFN_DebugOutputCallback callback)
 	:vsBufferedStringStreamBuf(bufferSize), m_OutputLogFile(false), m_old_cout_buffer(nullptr), m_old_cerr_buffer(nullptr), m_PFN_DebugCallback(callback)
 {
 	m_OutputWindow = outputWindow;
 
-	if (logFilename)
+	if (std::filesystem::exists(logFilename))
 	{
 		SetLogFile(logFilename);
 	}
@@ -115,7 +115,7 @@ VisualStudioDebugOutput::~VisualStudioDebugOutput()
 	std::cerr.rdbuf(m_old_cerr_buffer);
 }
 
-void VisualStudioDebugOutput::SetLogFile(const std::string& logFilename)
+void VisualStudioDebugOutput::SetLogFile(const std::filesystem::path& logFilename)
 {
 	m_LogFile.open(logFilename);
 	if (m_LogFile.is_open())
